@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFinancial } from '@/contexts/FinancialContext';
 import { X } from 'lucide-react';
+import { BudgetSchema } from '@/schemas/financial';
+import { useToast } from '@/hooks/use-toast';
 
 interface BudgetFormProps {
   budgetId?: string | null;
@@ -19,6 +21,7 @@ const BUDGET_COLORS = [
 
 export const BudgetForm: React.FC<BudgetFormProps> = ({ budgetId, onClose }) => {
   const { budgets = [], categories, addBudget, updateBudget } = useFinancial();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     category: '',
     limit: 0,
@@ -45,18 +48,36 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({ budgetId, onClose }) => 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const budgetData = {
-      ...formData,
-      spent: 0, // Will be calculated dynamically
-    };
-    
-    if (isEditing && budgetId) {
-      updateBudget?.(budgetId, budgetData);
-    } else {
-      addBudget?.(budgetData);
+    try {
+      const validatedData = BudgetSchema.parse(formData);
+      
+      const budgetData = {
+        ...validatedData,
+        spent: 0, // Will be calculated dynamically
+      };
+      
+      if (isEditing && budgetId) {
+        updateBudget?.(budgetId, budgetData);
+        toast({
+          title: "Orçamento atualizado",
+          description: "Orçamento atualizado com sucesso!",
+        });
+      } else {
+        addBudget?.(budgetData);
+        toast({
+          title: "Orçamento criado",
+          description: "Orçamento criado com sucesso!",
+        });
+      }
+      
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Erro na validação",
+        description: error.errors?.[0]?.message || "Dados inválidos",
+        variant: "destructive",
+      });
     }
-    
-    onClose();
   };
 
   const expenseCategories = categories.filter(cat => cat.type === 'expense');

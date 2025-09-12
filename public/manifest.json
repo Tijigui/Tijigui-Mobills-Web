@@ -1,0 +1,45 @@
+{
+  "name": "FinanceApp - Gerenciador Financeiro",
+  "short_name": "FinanceApp",
+  "description": "Aplicativo completo para gerenciamento de finanças pessoais",
+  "theme_color": "#3b82f6",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/placeholder.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/placeholder.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "categories": ["finance", "productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Nova Transação",
+      "short_name": "Transação",
+      "description": "Adicionar nova transação",
+      "url": "/transactions",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Relatórios",
+      "short_name": "Relatórios",
+      "description": "Ver relatórios financeiros",
+      "url": "/reports",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    }
+  ]
+}

@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import { CalendarIcon, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { GoalSchema } from '@/schemas/financial';
+import { useToast } from '@/hooks/use-toast';
 
 interface GoalFormProps {
   goalId?: string | null;
@@ -25,6 +27,7 @@ const GOAL_COLORS = [
 
 export const GoalForm: React.FC<GoalFormProps> = ({ goalId, onClose }) => {
   const { goals = [], addGoal, updateGoal } = useFinancial();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -55,19 +58,37 @@ export const GoalForm: React.FC<GoalFormProps> = ({ goalId, onClose }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const goalData = {
-      ...formData,
-      createdAt: isEditing ? currentGoal!.createdAt : new Date(),
-      completed: formData.currentAmount >= formData.targetAmount,
-    };
-    
-    if (isEditing && goalId) {
-      updateGoal?.(goalId, goalData);
-    } else {
-      addGoal?.(goalData);
+    try {
+      const validatedData = GoalSchema.parse(formData);
+      
+      const goalData = {
+        ...validatedData,
+        createdAt: isEditing ? currentGoal!.createdAt : new Date(),
+        completed: formData.currentAmount >= formData.targetAmount,
+      };
+      
+      if (isEditing && goalId) {
+        updateGoal?.(goalId, goalData);
+        toast({
+          title: "Meta atualizada",
+          description: "Meta atualizada com sucesso!",
+        });
+      } else {
+        addGoal?.(goalData);
+        toast({
+          title: "Meta criada",
+          description: "Meta criada com sucesso!",
+        });
+      }
+      
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Erro na validação",
+        description: error.errors?.[0]?.message || "Dados inválidos",
+        variant: "destructive",
+      });
     }
-    
-    onClose();
   };
 
   return (

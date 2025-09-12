@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 const transactionSchema = z.object({
   description: z.string().min(1, 'Descrição é obrigatória'),
   amount: z.number().min(0.01, 'Valor deve ser maior que zero'),
-  type: z.enum(['income', 'expense'], { required_error: 'Tipo é obrigatório' }),
+  type: z.enum(['income', 'expense']),
   category: z.string().min(1, 'Categoria é obrigatória'),
   account: z.string().min(1, 'Conta é obrigatória'),
   date: z.string().min(1, 'Data é obrigatória'),

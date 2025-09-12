@@ -4,26 +4,65 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FinancialProvider } from "@/contexts/FinancialContext";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Accounts from "./components/Accounts";
+import Transactions from "./components/Transactions";
+import CreditCards from "./components/CreditCards";
+import FinancialGoals from "./components/FinancialGoals";
+import BudgetTracker from "./components/BudgetTracker";
+import Reports from "./components/Reports";
+import Analytics from "./components/Analytics";
+import NotificationCenter from "./components/NotificationCenter";
+import Settings from "./components/Settings";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <FinancialProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </FinancialProvider>
+    <ThemeProvider defaultTheme="system" storageKey="financial-app-theme">
+      <FinancialProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <SidebarProvider>
+              <div className="min-h-screen flex w-full bg-background">
+                <header className="fixed top-0 left-0 right-0 h-12 flex items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 px-4">
+                  <div className="flex items-center gap-2">
+                    <SidebarTrigger className="animate-fade-in" />
+                    <h1 className="font-bold text-lg text-primary animate-fade-in">FinanceApp</h1>
+                  </div>
+                  <ThemeSwitcher />
+                </header>
+                
+                <AppSidebar />
+                
+                <main className="flex-1 pt-12 overflow-auto">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/accounts" element={<Accounts />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/credit-cards" element={<CreditCards />} />
+                    <Route path="/goals" element={<FinancialGoals />} />
+                    <Route path="/budgets" element={<BudgetTracker />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/notifications" element={<NotificationCenter />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+              </div>
+            </SidebarProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </FinancialProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

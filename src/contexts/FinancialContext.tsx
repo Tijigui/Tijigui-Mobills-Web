@@ -49,6 +49,8 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const savedAccounts = localStorage.getItem('financial-accounts');
     const savedTransactions = localStorage.getItem('financial-transactions');
     const savedCreditCards = localStorage.getItem('financial-credit-cards');
+    const savedGoals = localStorage.getItem('financial-goals');
+    const savedBudgets = localStorage.getItem('financial-budgets');
 
     if (savedAccounts) {
       setAccounts(JSON.parse(savedAccounts));
@@ -61,6 +63,16 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
     if (savedCreditCards) {
       setCreditCards(JSON.parse(savedCreditCards));
+    }
+    if (savedGoals) {
+      setGoals(JSON.parse(savedGoals).map((g: any) => ({
+        ...g,
+        deadline: new Date(g.deadline),
+        createdAt: new Date(g.createdAt)
+      })));
+    }
+    if (savedBudgets) {
+      setBudgets(JSON.parse(savedBudgets));
     }
   }, []);
 
@@ -76,6 +88,14 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     localStorage.setItem('financial-credit-cards', JSON.stringify(creditCards));
   }, [creditCards]);
+
+  useEffect(() => {
+    localStorage.setItem('financial-goals', JSON.stringify(goals));
+  }, [goals]);
+
+  useEffect(() => {
+    localStorage.setItem('financial-budgets', JSON.stringify(budgets));
+  }, [budgets]);
 
   const addAccount = (accountData: Omit<Account, 'id' | 'createdAt'>) => {
     const newAccount: Account = {
