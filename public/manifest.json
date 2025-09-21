@@ -1,7 +1,7 @@
 {
-  "name": "FinanceApp - Controle Financeiro Pessoal",
-  "short_name": "FinanceApp",
-  "description": "Aplicativo completo para controle financeiro pessoal com contas, transações, metas e relatórios",
+  "name": "Tijigui Mobills - Controle Financeiro Pessoal",
+  "short_name": "Tijigui Mobills",
+  "description": "Aplicativo completo para controle financeiro pessoal com contas, transações, metas e relatórios desenvolvido por Thiago Guimarães",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
