@@ -50,7 +50,7 @@ const App = () => {
   return (
     <ErrorBoundary showDetails={process.env.NODE_ENV === 'development'}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="financial-app-theme">
+        <ThemeProvider defaultTheme="system" storageKey="tijigui-mobills-theme">
           <FinancialProvider>
             <TooltipProvider>
               <Toaster />
@@ -62,7 +62,7 @@ const App = () => {
                       <div className="flex items-center gap-2">
                         <SidebarTrigger className="animate-fade-in" />
                         <h1 className="font-bold text-lg text-primary animate-fade-in">
-                          FinanceApp
+                          Tijigui Mobills
                         </h1>
                       </div>
                       <ThemeSwitcher />
