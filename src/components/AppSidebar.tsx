@@ -9,14 +9,9 @@ import {
   BarChart3, 
   Bell, 
   Settings,
-  CreditCard,
-  LogOut,
-  User
+  CreditCard
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
-import { useFinancial } from "@/contexts/SupabaseFinancialContext"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
 
 import {
   Sidebar,
@@ -58,28 +53,10 @@ export function AppSidebar() {
   const collapsed = state === "collapsed"
   const location = useLocation()
   const currentPath = location.pathname
-  const { user, signOut } = useFinancial()
-  const { toast } = useToast()
 
   const isActive = (path: string) => currentPath === path
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-primary/10 text-primary font-medium border-r-2 border-primary" : "hover:bg-muted/50 transition-colors"
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      toast({
-        title: "Logout realizado",
-        description: "Você foi desconectado com sucesso.",
-      })
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Não foi possível fazer logout.",
-        variant: "destructive",
-      })
-    }
-  }
 
   return (
     <Sidebar
@@ -177,29 +154,6 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* User Section */}
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupContent className="border-t pt-4">
-            <div className="px-2 space-y-2">
-              {!collapsed && (
-                <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-2">
-                  <User className="h-4 w-4" />
-                  <span className="truncate">{user?.email}</span>
-                </div>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="w-full justify-start"
-              >
-                <LogOut className="h-4 w-4" />
-                {!collapsed && <span className="ml-2">Sair</span>}
-              </Button>
-            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
