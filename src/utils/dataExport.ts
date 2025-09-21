@@ -212,7 +212,7 @@ export const exportData = (
   options: ExportOptions
 ): void => {
   const timestamp = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-  const baseFilename = `financeapp_backup_${timestamp}`;
+  const baseFilename = `tijigui-mobills_backup_${timestamp}`;
 
   // Filter data based on options
   let filteredData = { ...data };
@@ -297,7 +297,8 @@ export const generateSummaryReport = (data: ExportData): string => {
     new Date() > g.deadline && g.currentAmount < g.targetAmount
   ).length;
 
-  return `# Relatório Financeiro - ${format(new Date(), 'dd/MM/yyyy', { locale: ptBR })}
+  return `# Relatório Financeiro - Tijigui Mobills
+## ${format(new Date(), 'dd/MM/yyyy', { locale: ptBR })}
 
 ## Resumo Geral
 
@@ -324,7 +325,8 @@ export const generateSummaryReport = (data: ExportData): string => {
 - **Orçamentos Excedidos**: ${data.budgets.filter(b => b.spent > b.limit).length}
 
 ---
-*Relatório gerado automaticamente pelo FinanceApp*
+*Relatório gerado automaticamente pelo Tijigui Mobills*
+*Desenvolvido por Thiago Guimarães*
 `;
 };
 
@@ -337,6 +339,8 @@ export const createBackup = (data: ExportData): Promise<string> => {
         ...data.metadata,
         backupType: 'full',
         version: '2.0',
+        appName: 'Tijigui Mobills',
+        developer: 'Thiago Guimarães',
         checksum: generateChecksum(data)
       }
     };
