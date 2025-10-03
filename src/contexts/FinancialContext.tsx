@@ -51,7 +51,7 @@ const generateId = (): string => {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
-const safeJsonParse = <T>(data: string, fallback: T): T => {
+const safeJsonParse = <T,>(data: string, fallback: T): T => {
   try {
     return JSON.parse(data) || fallback;
   } catch {
