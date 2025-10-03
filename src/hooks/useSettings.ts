@@ -330,10 +330,16 @@ export const useSettings = () => {
     key: K,
     updates: Partial<AppSettings[K]>
   ) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: { ...prev[key], ...updates }
-    }));
+    setSettings(prev => {
+      const currentValue = prev[key];
+      if (typeof currentValue === 'object' && currentValue !== null) {
+        return {
+          ...prev,
+          [key]: { ...currentValue, ...updates }
+        };
+      }
+      return prev;
+    });
     setHasUnsavedChanges(true);
   }, []);
 

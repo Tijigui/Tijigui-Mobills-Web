@@ -118,7 +118,6 @@ export const useNotifications = () => {
           icon: '/favicon.ico',
           badge: '/favicon.ico',
           tag: 'finance-app',
-          renotify: true,
           requireInteraction: false,
           silent: !settings.soundEnabled,
           ...options,

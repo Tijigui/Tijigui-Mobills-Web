@@ -53,6 +53,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({ budgetId, onClose }) => 
       
       const budgetData = {
         ...validatedData,
+        period: validatedData.period || 'monthly' as 'monthly' | 'weekly' | 'yearly',
         spent: 0, // Will be calculated dynamically
       };
       

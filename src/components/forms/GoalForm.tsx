@@ -63,6 +63,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({ goalId, onClose }) => {
       
       const goalData = {
         ...validatedData,
+        category: validatedData.category || 'savings' as 'savings' | 'investment' | 'purchase' | 'debt' | 'emergency',
         createdAt: isEditing ? currentGoal!.createdAt : new Date(),
         completed: formData.currentAmount >= formData.targetAmount,
       };

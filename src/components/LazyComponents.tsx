@@ -129,18 +129,18 @@ export const LoadingSpinner = ({ size = 'default', text }: { size?: 'sm' | 'defa
 };
 
 // Higher-order component for lazy loading with custom fallback
-export const withLazyLoading = <P extends object>(
+export function withLazyLoading<P extends object>(
   Component: ComponentType<P>,
-  fallback?: React.ComponentType
-) => {
+  FallbackComponent?: React.ComponentType
+): React.FC<P> {
   const LazyComponent = lazy(() => Promise.resolve({ default: Component }));
   
   return (props: P) => (
-    <Suspense fallback={fallback ? <fallback /> : <PageLoadingSkeleton />}>
-      <LazyComponent {...props} />
+    <Suspense fallback={FallbackComponent ? <FallbackComponent /> : <PageLoadingSkeleton />}>
+      <LazyComponent {...(props as any)} />
     </Suspense>
   );
-};
+}
 
 // Lazy wrapper component
 export const LazyWrapper = ({ 

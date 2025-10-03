@@ -42,7 +42,7 @@ export interface Category {
 export const BANKS = [
   "Santander", "Nubank", "Banco do Brasil", "Caixa", "Itaú",
   "Bradesco", "Pic Pay", "Banco Inter", "C6 Bank", "XP Investimentos"
-];
+] as const;
 
 export const DEFAULT_CATEGORIES: Category[] = [
   // Income categories

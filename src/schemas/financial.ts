@@ -7,14 +7,12 @@ const hexColorSchema = z.string()
 
 const positiveNumberSchema = (fieldName: string) => 
   z.number({
-    required_error: `${fieldName} é obrigatório`,
-    invalid_type_error: `${fieldName} deve ser um número`
+    message: `${fieldName} deve ser um número`
   }).positive(`${fieldName} deve ser positivo`);
 
 const nonNegativeNumberSchema = (fieldName: string) => 
   z.number({
-    required_error: `${fieldName} é obrigatório`,
-    invalid_type_error: `${fieldName} deve ser um número`
+    message: `${fieldName} deve ser um número`
   }).min(0, `${fieldName} não pode ser negativo`);
 
 // Account Schema
@@ -23,15 +21,14 @@ export const AccountSchema = z.object({
     .min(2, 'Nome deve ter pelo menos 2 caracteres')
     .max(50, 'Nome deve ter no máximo 50 caracteres')
     .trim(),
-  bank: z.enum(BANKS as [string, ...string[]], {
-    errorMap: () => ({ message: 'Selecione um banco válido' })
-  }),
-  type: z.enum(['checking', 'savings', 'investment'], {
-    errorMap: () => ({ message: 'Selecione um tipo de conta válido' })
-  }),
+  bank: z.string().min(1, 'Banco é obrigatório'),
+  type: z.union([
+    z.literal('checking'),
+    z.literal('savings'),
+    z.literal('investment')
+  ]),
   balance: z.number({
-    required_error: 'Saldo é obrigatório',
-    invalid_type_error: 'Saldo deve ser um número'
+    message: 'Saldo deve ser um número'
   }).finite('Saldo deve ser um número válido'),
   color: hexColorSchema,
 });
@@ -43,14 +40,14 @@ export const TransactionSchema = z.object({
     .max(200, 'Descrição deve ter no máximo 200 caracteres')
     .trim(),
   amount: positiveNumberSchema('Valor'),
-  type: z.enum(['income', 'expense'], {
-    errorMap: () => ({ message: 'Selecione um tipo de transação válido' })
-  }),
+  type: z.union([
+    z.literal('income'),
+    z.literal('expense')
+  ]),
   category: z.string().min(1, 'Categoria é obrigatória'),
   account: z.string().min(1, 'Conta é obrigatória'),
   date: z.date({
-    required_error: 'Data é obrigatória',
-    invalid_type_error: 'Data deve ser válida'
+    message: 'Data deve ser válida'
   }).max(new Date(), 'Data não pode ser no futuro'),
   recurring: z.boolean().default(false),
   tags: z.array(z.string().trim().min(1)).optional(),
@@ -62,9 +59,7 @@ export const CreditCardSchema = z.object({
     .min(2, 'Nome deve ter pelo menos 2 caracteres')
     .max(50, 'Nome deve ter no máximo 50 caracteres')
     .trim(),
-  bank: z.enum(BANKS as [string, ...string[]], {
-    errorMap: () => ({ message: 'Selecione um banco válido' })
-  }),
+  bank: z.string().min(1, 'Banco é obrigatório'),
   limit: positiveNumberSchema('Limite'),
   currentBalance: nonNegativeNumberSchema('Saldo atual'),
   dueDate: z.number()
@@ -103,15 +98,18 @@ export const GoalSchema = z.object({
   targetAmount: positiveNumberSchema('Valor meta'),
   currentAmount: nonNegativeNumberSchema('Valor atual'),
   deadline: z.date({
-    required_error: 'Prazo é obrigatório',
-    invalid_type_error: 'Prazo deve ser uma data válida'
+    message: 'Prazo deve ser uma data válida'
   }).refine(
     date => date > new Date(),
     'Prazo deve ser uma data futura'
   ),
-  category: z.enum(['savings', 'investment', 'purchase', 'debt', 'emergency'], {
-    errorMap: () => ({ message: 'Selecione uma categoria válida' })
-  }),
+  category: z.union([
+    z.literal('savings'),
+    z.literal('investment'),
+    z.literal('purchase'),
+    z.literal('debt'),
+    z.literal('emergency')
+  ]),
   color: hexColorSchema,
 }).refine(
   (data) => data.currentAmount <= data.targetAmount,
@@ -125,9 +123,11 @@ export const GoalSchema = z.object({
 export const BudgetSchema = z.object({
   category: z.string().min(1, 'Categoria é obrigatória'),
   limit: positiveNumberSchema('Limite'),
-  period: z.enum(['monthly', 'weekly', 'yearly'], {
-    errorMap: () => ({ message: 'Selecione um período válido' })
-  }),
+  period: z.union([
+    z.literal('monthly'),
+    z.literal('weekly'),
+    z.literal('yearly')
+  ]),
   color: hexColorSchema,
   alerts: z.boolean().default(true),
   alertThreshold: z.number()
@@ -146,17 +146,29 @@ export const BudgetSchema = z.object({
 export const SettingsSchema = z.object({
   currency: z.string().min(1, 'Moeda é obrigatória').default('BRL'),
   language: z.string().min(1, 'Idioma é obrigatório').default('pt-BR'),
-  theme: z.enum(['light', 'dark', 'system']).default('system'),
+  theme: z.union([
+    z.literal('light'),
+    z.literal('dark'),
+    z.literal('system')
+  ]).default('system'),
   notifications: z.object({
     enabled: z.boolean().default(true),
     email: z.boolean().default(false),
     push: z.boolean().default(true),
     sound: z.boolean().default(true),
-  }).default({}),
+  }).default({
+    enabled: true,
+    email: false,
+    push: true,
+    sound: true,
+  }),
   privacy: z.object({
     shareAnalytics: z.boolean().default(false),
     encryptData: z.boolean().default(true),
-  }).default({}),
+  }).default({
+    shareAnalytics: false,
+    encryptData: true,
+  }),
 });
 
 // Export inferred types
@@ -182,7 +194,7 @@ export const validateSchema = <T>(
 // Helper function to get error messages from ZodError
 export const getErrorMessages = (error: z.ZodError): Record<string, string> => {
   const messages: Record<string, string> = {};
-  error.errors.forEach((err) => {
+  error.issues.forEach((err) => {
     const path = err.path.join('.');
     messages[path] = err.message;
   });
