@@ -253,9 +253,9 @@ export const useSettings = () => {
       let savedSettings: AppSettings | null = null;
       
       if (settings.privacy.encryptData) {
-        savedSettings = await secureStorage.getItem<AppSettings>('tijigui-mobills-settings');
+        savedSettings = await secureStorage.getItem<AppSettings>('app-settings');
       } else {
-        const stored = localStorage.getItem('tijigui-mobills-settings');
+        const stored = localStorage.getItem('app-settings');
         if (stored) {
           savedSettings = JSON.parse(stored);
         }
@@ -306,9 +306,9 @@ export const useSettings = () => {
   const saveSettings = useCallback(async () => {
     try {
       if (settings.privacy.encryptData) {
-        await secureStorage.setItem('tijigui-mobills-settings', settings);
+        await secureStorage.setItem('app-settings', settings);
       } else {
-        localStorage.setItem('tijigui-mobills-settings', JSON.stringify(settings));
+        localStorage.setItem('app-settings', JSON.stringify(settings));
       }
       
       setHasUnsavedChanges(false);
@@ -351,7 +351,7 @@ export const useSettings = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `tijigui-mobills-settings-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `financeapp-settings-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
